@@ -36,9 +36,11 @@
   --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.12rem);
   --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
   --step-2: clamp(1.6rem, 1.4rem + 1vw, 2.4rem);
-  --step-3: clamp(2.2rem, 1.8rem + 2.2vw, 3.6rem);
-  --step-4: clamp(3rem, 2.2rem + 4.2vw, 6rem);
-  --step-5: clamp(3.6rem, 2.4rem + 7vw, 9.5rem);
+  --step-3: clamp(2rem, 1.5rem + 2.2vw, 3.6rem);
+  /* Alfa Slab One is a very wide slab — keep generous floors so the big display
+     titles don't overrun narrow phone viewports while staying huge on desktop. */
+  --step-4: clamp(2.2rem, 0.9rem + 5.6vw, 6rem);
+  --step-5: clamp(3rem, 1.3rem + 7vw, 10.5rem);
 
   /* layout */
   --maxw: 1240px;
@@ -46,7 +48,15 @@
   --radius: 4px;     /* tight, athletic — not pill-soft */
   --radius-lg: 10px;
 
+  /* nav height — shared so the info banner can sit flush beneath it */
+  --nav-h: 72px;
+
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Roomier header on big screens so the nav doesn't look undersized */
+@media (min-width: 1280px) {
+  :root { --nav-h: 86px; }
 }
 
 * { box-sizing: border-box; }
@@ -88,6 +98,8 @@ h1, h2, h3, h4 {
   letter-spacing: 0.02em;
   text-transform: uppercase;
   margin: 0;
+  /* let long single words break before they overrun small viewports */
+  overflow-wrap: break-word;
 }
 
 p { margin: 0; }

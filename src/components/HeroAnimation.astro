@@ -146,7 +146,7 @@ const t = useTranslations(lang);
         <!-- motion trail (drawn with DrawSVG during flight) -->
         <path
           id="motion-trail"
-          d="M905 250 C 820 90, 600 92, 470 540"
+          d="M905 250 C 905 90, 745 100, 780 544"
           fill="none"
           stroke="#f8f7f2"
           stroke-opacity="0.55"
@@ -155,7 +155,20 @@ const t = useTranslations(lang);
         />
 
         <!-- invisible flight path -->
-        <path id="ball-path" d="M905 250 C 820 90, 600 92, 470 540" fill="none" stroke="none" />
+        <path id="ball-path" d="M905 250 C 905 90, 745 100, 780 544" fill="none" stroke="none" />
+
+        <!-- MOBILE: vertical drop straight down the tower into the cup below it -->
+        <path
+          id="motion-trail-m"
+          d="M905 250 L905 644"
+          fill="none"
+          stroke="#f8f7f2"
+          stroke-opacity="0.55"
+          stroke-width="3"
+          stroke-linecap="round"
+          opacity="0"
+        />
+        <path id="ball-path-m" d="M905 250 L905 644" fill="none" stroke="none" />
 
         <!-- RED CUP -->
         <g id="red-cup" opacity="0">
@@ -401,16 +414,47 @@ const t = useTranslations(lang);
       left: var(--gutter);
       top: 50%;
       transform: translateY(-50%);
-      max-width: 620px;
+      max-width: min(48vw, 680px);
       margin: 0;
       padding: 0;
     }
+    /* big display lines never break mid-word here — they grow with the viewport
+       and fill the left half instead of being boxed small */
+    .hero-title span { white-space: nowrap; }
   }
 
+  /* ---------- handheld: copy on the left, tower drops on the right ---------- */
   @media (max-width: 899px) {
-    .hero-title { font-size: clamp(3.4rem, 17vw, 6rem); }
-    .hero-sub { font-size: var(--step-0); }
+    .hero-copy {
+      left: var(--gutter);
+      right: auto;
+      top: 50%;
+      transform: translateY(-50%);
+      /* keep the headline clear of the tower column on the right */
+      max-width: min(58vw, 22rem);
+      margin: 0;
+      text-align: left;
+    }
+    /* sized so the long words (LEAGUE / BERLIN) never break in the side column */
+    .hero-title { font-size: clamp(1.9rem, 10vw, 3.4rem); }
+    .hero-sub {
+      font-size: var(--step-0);
+      max-width: 24ch;
+    }
+    .eyebrow {
+      font-size: 0.64rem;
+      letter-spacing: 0.13em;
+    }
     .tower-tag { display: none; }
+    /* scroll cue tucks to the left edge, clear of the tower */
+    .scroll-cue {
+      left: var(--gutter);
+      transform: none;
+      bottom: 1.5rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -437,8 +481,6 @@ const t = useTranslations(lang);
   const stage = document.querySelector<HTMLElement>("[data-hero-stage]");
   const shakeEls = ["[data-hero-shake]", "#nav"];
 
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-
   // Calm tableau for reduced motion: the tower sphere already IS the ball,
   // the cup waits below, everything legible and still.
   function setStatic() {
@@ -446,7 +488,7 @@ const t = useTranslations(lang);
     gsap.set("#tower-sphere-ghost", { opacity: 0 });
     gsap.set("#beer-pong-ball", { opacity: 1 });
     gsap.set("#ball-dimples", { opacity: 0.4 });
-    gsap.set("#red-cup", { opacity: 1, y: 0 });
+    gsap.set("#red-cup", { opacity: 1, x: 310, y: 0 });
     gsap.set("#motion-trail", { opacity: 0.25, drawSVG: "100%" });
   }
 
@@ -469,111 +511,220 @@ const t = useTranslations(lang);
     });
   }
 
+  // The scene SVG can be reframed per breakpoint. Desktop sees the whole
+  // tableau; handheld zooms into a tall portrait window over the tower so it
+  // reads big and sits on the side, with the cup tucked beneath it.
+  const scene = document.querySelector<SVGSVGElement>(".hero-scene");
+  const ORIGINAL_VB = "0 0 1280 820";
+  const MOBILE_VB = "560 20 450 790";
+  // Desktop centres the whole tableau; handheld pins the framing to the right
+  // edge so the tower stays "on the side" whatever the phone/tablet aspect.
+  const DESKTOP_PAR = "xMidYMid meet";
+  const MOBILE_PAR = "xMaxYMid meet";
+  // cup gets translated under the tower sphere on handheld: mouth (470,544) → (905,644)
+  const CUP_M = { x: 435, y: 100 } as const;
+  const setFraming = (vb: string, par: string) => {
+    scene?.setAttribute("viewBox", vb);
+    scene?.setAttribute("preserveAspectRatio", par);
+  };
+
+  // Calm static scene for handheld reduced-motion: tower + cup beneath it, legible.
+  function setStaticMobile() {
+    gsap.set("#tv-tower-sphere-metal", { opacity: 1 });
+    gsap.set("#tower-sphere-ghost", { opacity: 0 });
+    gsap.set("#beer-pong-ball, #ball-dimples, #cup-splash", { opacity: 0 });
+    gsap.set("#red-cup", { ...CUP_M, opacity: 1, scale: 1, transformOrigin: "50% 100%" });
+    gsap.set("#motion-trail", { opacity: 0 });
+    gsap.set("#motion-trail-m", { opacity: 0.22, drawSVG: "100%" });
+  }
+
   const mm = gsap.matchMedia();
 
-  // ---------- full scroll-film (desktop + tablet) ----------
-  mm.add(
-    {
-      desktop: "(min-width: 900px) and (prefers-reduced-motion: no-preference)",
-      handheld: "(max-width: 899px) and (prefers-reduced-motion: no-preference)",
-    },
-    (ctx) => {
-      const { desktop } = ctx.conditions as { desktop: boolean };
-      const ORIGIN = { svgOrigin: "905 250" } as const;
+  // ---------- desktop / wide: the ball arcs across into the cup ----------
+  mm.add("(min-width: 900px) and (prefers-reduced-motion: no-preference)", () => {
+    setFraming(ORIGINAL_VB, DESKTOP_PAR);
+    const ORIGIN = { svgOrigin: "905 250" } as const;
 
-      // baseline scene state for the film
-      gsap.set("#red-cup", { opacity: 0, y: 26 });
-      gsap.set("#motion-trail", { drawSVG: "0%", opacity: 0 });
-      gsap.set("#beer-pong-ball, #ball-dimples, #cup-splash, #tower-sphere-ghost", { opacity: 0 });
-      if (desktop) gsap.set(".kw", { opacity: 0, scale: 0.5, transformOrigin: "center" });
+    // baseline scene state for the film. The cup (and its splash) shift right so
+    // the ball lobs into them clear of the left-hand copy column.
+    gsap.set("#red-cup", { opacity: 0, x: 310, y: 26, scale: 1 });
+    gsap.set("#cup-splash", { x: 310, opacity: 0 });
+    gsap.set("#motion-trail", { drawSVG: "0%", opacity: 0 });
+    gsap.set("#motion-trail-m", { opacity: 0 });
+    gsap.set("#beer-pong-ball, #ball-dimples, #tower-sphere-ghost", { opacity: 0 });
+    gsap.set(".kw", { opacity: 0, scale: 0.5, transformOrigin: "center" });
 
-      const tl = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: stage,
-          start: "top top",
-          end: desktop ? "+=3600" : "+=2200",
-          scrub: desktop ? 1 : 0.6,
-          pin: true,
-          anticipatePin: 1,
-        },
-      });
+    const tl = gsap.timeline({
+      defaults: { ease: "none" },
+      scrollTrigger: {
+        trigger: stage,
+        start: "top top",
+        end: "+=3600",
+        scrub: 1,
+        pin: true,
+        anticipatePin: 1,
+      },
+    });
 
-      // Phase 1→2 — camera pushes toward the sphere (copy stays put & legible).
-      // Only the scroll hint fades; all headline copy remains fully visible.
-      tl.to(".scroll-cue", { opacity: 0, duration: 0.4 }, 0)
-        .to("#tower-wrapper", { scale: 1.16, ...ORIGIN }, 0)
-        .to("#orb", { scale: 1.16, ...ORIGIN }, 0);
+    // Phase 1→2 — camera pushes toward the sphere (copy stays put & legible).
+    tl.to(".scroll-cue", { opacity: 0, duration: 0.4 }, 0)
+      .to("#tower-wrapper", { scale: 1.16, ...ORIGIN }, 0)
+      .to("#orb", { scale: 1.16, ...ORIGIN }, 0);
 
-      // Phase 3 — wind-up / detach; the darker sphere shell starts to show
-      tl.to("#sphere-glow", { opacity: 1, scale: 1.25, ...ORIGIN }, ">-0.2")
-        .to("#orb", { rotation: 18, scale: 1.0, ...ORIGIN }, "<")
-        .to("#tower-sphere-ghost", { opacity: 0.45 }, "<")
-        .to(".tower-tag", { opacity: 0 }, "<");
+    // Phase 3 — wind-up / detach; the darker sphere shell starts to show
+    tl.to("#sphere-glow", { opacity: 1, scale: 1.25, ...ORIGIN }, ">-0.2")
+      .to("#orb", { rotation: 18, scale: 1.0, ...ORIGIN }, "<")
+      .to("#tower-sphere-ghost", { opacity: 0.45 }, "<")
+      .to(".tower-tag", { opacity: 0 }, "<");
 
-      // Phase 4 — metal sphere crossfades into the beer-pong ball
-      tl.addLabel("morph")
-        .to("#tv-tower-sphere-metal", { opacity: 0 }, "morph")
-        .to("#beer-pong-ball", { opacity: 1, rotation: 40, ...ORIGIN }, "morph")
-        .to("#ball-dimples", { opacity: 1 }, "morph")
-        .to("#tower-sphere-ghost", { opacity: 0.85 }, "morph");
+    // Phase 4 — metal sphere crossfades into the beer-pong ball
+    tl.addLabel("morph")
+      .to("#tv-tower-sphere-metal", { opacity: 0 }, "morph")
+      .to("#beer-pong-ball", { opacity: 1, rotation: 40, ...ORIGIN }, "morph")
+      .to("#ball-dimples", { opacity: 1 }, "morph")
+      .to("#tower-sphere-ghost", { opacity: 0.85 }, "morph");
 
-      // Phase 5 — ball flies the arc, trail draws behind it, cup rises to meet it
-      tl.to("#tower-wrapper", { scale: 1.0, ...ORIGIN }, ">")
-        .to("#sphere-glow", { opacity: 0.18, duration: 0.7 }, "<")
-        .to("#red-cup", { opacity: 1, y: 0, duration: 0.6 }, "<")
-        .fromTo("#motion-trail", { drawSVG: "0%", opacity: 0.55 }, { drawSVG: "100%", duration: 2.2 }, "<")
-        .to(
-          "#orb",
-          {
-            duration: 2.2,
-            scale: 0.46,
-            rotation: "+=420",
-            motionPath: {
-              path: "#ball-path",
-              align: "#ball-path",
-              alignOrigin: [0.5, 0.5],
-              autoRotate: false,
-            },
+    // Phase 5 — ball flies the arc, trail draws behind it, cup rises to meet it
+    tl.to("#tower-wrapper", { scale: 1.0, ...ORIGIN }, ">")
+      .to("#sphere-glow", { opacity: 0.18, duration: 0.7 }, "<")
+      .to("#red-cup", { opacity: 1, y: 0, duration: 0.6 }, "<")
+      .fromTo("#motion-trail", { drawSVG: "0%", opacity: 0.55 }, { drawSVG: "100%", duration: 2.2, immediateRender: false }, "<")
+      .to(
+        "#orb",
+        {
+          duration: 2.2,
+          scale: 0.46,
+          rotation: "+=420",
+          motionPath: {
+            path: "#ball-path",
+            align: "#ball-path",
+            alignOrigin: [0.5, 0.5],
+            autoRotate: false,
           },
-          "<"
-        );
+        },
+        "<"
+      );
 
-      // keywords pop in around the arc as the ball travels (desktop only)
-      if (desktop) {
-        tl.to(
-          ".kw",
-          { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)", stagger: 0.32 },
-          "<+0.15"
-        );
-      }
+    // keywords pop in around the arc as the ball travels
+    tl.to(
+      ".kw",
+      { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)", stagger: 0.32 },
+      "<+0.15"
+    );
 
-      // Phase 6 — impact: cup shake, splash bursts from the rim, whole scene jolts
-      tl.addLabel("impact")
-        .call(screenShake, undefined, "impact")
-        .to("#red-cup", { y: 7, scaleX: 1.06, duration: 0.1, transformOrigin: "470px 700px" }, "impact")
-        .to("#red-cup", { y: 0, scaleX: 1, rotation: -2.5, duration: 0.16 }, ">")
-        .to("#red-cup", { rotation: 0, duration: 0.2 }, ">")
-        .to("#motion-trail", { opacity: 0, duration: 0.4 }, "impact")
-        .fromTo(
-          "#cup-splash",
-          { opacity: 1, scale: 0.4, svgOrigin: "470 544" },
-          { scale: 1.2, duration: 0.22, svgOrigin: "470 544" },
-          "impact"
-        )
-        .to("#cup-splash", { opacity: 0, duration: 0.4 }, ">");
+    // Phase 6 — impact: cup shake, splash bursts from the rim, whole scene jolts
+    tl.addLabel("impact")
+      .call(screenShake, undefined, "impact")
+      .to("#red-cup", { y: 7, scaleX: 1.06, duration: 0.1, transformOrigin: "780px 700px" }, "impact")
+      .to("#red-cup", { y: 0, scaleX: 1, rotation: -2.5, duration: 0.16 }, ">")
+      .to("#red-cup", { rotation: 0, duration: 0.2 }, ">")
+      .to("#motion-trail", { opacity: 0, duration: 0.4 }, "impact")
+      .fromTo(
+        "#cup-splash",
+        { opacity: 1, scale: 0.4 },
+        { scale: 1.2, duration: 0.22, immediateRender: false },
+        "impact"
+      )
+      .to("#cup-splash", { opacity: 0, duration: 0.4 }, ">");
 
-      return () => {
-        gsap.set(shakeEls, { clearProps: "transform" });
-      };
-    }
-  );
-
-  // ---------- reduced motion ----------
-  mm.add("(prefers-reduced-motion: reduce)", () => {
-    setStatic();
+    return () => {
+      gsap.set(shakeEls, { clearProps: "transform" });
+    };
   });
 
-  // safety: if reduced preference is on
-  if (reduce.matches) setStatic();
+  // ---------- handheld: tower stands tall on the side, ball drops straight down ----------
+  mm.add("(max-width: 899px) and (prefers-reduced-motion: no-preference)", () => {
+    setFraming(MOBILE_VB, MOBILE_PAR);
+    const ORIGIN = { svgOrigin: "905 250" } as const;
+
+    // baseline: cup waits under the tower, hidden; desktop arc-trail off
+    gsap.set("#red-cup", { ...CUP_M, opacity: 0, scale: 0.9, transformOrigin: "50% 100%" });
+    gsap.set("#cup-splash", { ...CUP_M, opacity: 0 });
+    gsap.set("#motion-trail", { opacity: 0 });
+    gsap.set("#motion-trail-m", { drawSVG: "0%", opacity: 0 });
+    gsap.set("#beer-pong-ball, #ball-dimples, #tower-sphere-ghost", { opacity: 0 });
+    gsap.set("#tv-tower-sphere-metal", { opacity: 1 });
+
+    const tl = gsap.timeline({
+      defaults: { ease: "none" },
+      scrollTrigger: {
+        trigger: stage,
+        start: "top top",
+        end: "+=2200",
+        scrub: 0.6,
+        pin: true,
+        anticipatePin: 1,
+      },
+    });
+
+    // a small push toward the sphere
+    tl.to(".scroll-cue", { opacity: 0, duration: 0.4 }, 0)
+      .to("#tower-wrapper", { scale: 1.06, ...ORIGIN }, 0)
+      .to("#orb", { scale: 1.06, ...ORIGIN }, 0);
+
+    // wind-up / detach
+    tl.to("#sphere-glow", { opacity: 1, scale: 1.2, ...ORIGIN }, ">-0.2")
+      .to("#orb", { rotation: 10, scale: 1.0, ...ORIGIN }, "<")
+      .to("#tower-sphere-ghost", { opacity: 0.45 }, "<");
+
+    // metal sphere crossfades into the beer-pong ball
+    tl.addLabel("morph")
+      .to("#tv-tower-sphere-metal", { opacity: 0 }, "morph")
+      .to("#beer-pong-ball", { opacity: 1, rotation: 24, ...ORIGIN }, "morph")
+      .to("#ball-dimples", { opacity: 1 }, "morph")
+      .to("#tower-sphere-ghost", { opacity: 0.85 }, "morph");
+
+    // the drop — straight down the shaft into the cup below
+    tl.to("#tower-wrapper", { scale: 1.0, ...ORIGIN }, ">")
+      .to("#sphere-glow", { opacity: 0.18, duration: 0.7 }, "<")
+      .to("#red-cup", { opacity: 1, scale: 1, duration: 0.5 }, "<")
+      .fromTo("#motion-trail-m", { drawSVG: "0%", opacity: 0.55 }, { drawSVG: "100%", duration: 2.2, immediateRender: false }, "<")
+      .to(
+        "#orb",
+        {
+          duration: 2.2,
+          scale: 0.46,
+          rotation: "+=360",
+          motionPath: {
+            path: "#ball-path-m",
+            align: "#ball-path-m",
+            alignOrigin: [0.5, 0.5],
+            autoRotate: false,
+          },
+        },
+        "<"
+      );
+
+    // impact — cup squashes, splash bursts, scene jolts
+    tl.addLabel("impact")
+      .call(screenShake, undefined, "impact")
+      .to("#red-cup", { y: CUP_M.y + 7, scaleX: 1.06, duration: 0.1, transformOrigin: "50% 100%" }, "impact")
+      .to("#red-cup", { y: CUP_M.y, scaleX: 1, rotation: -2, duration: 0.16 }, ">")
+      .to("#red-cup", { rotation: 0, duration: 0.2 }, ">")
+      .to("#motion-trail-m", { opacity: 0, duration: 0.4 }, "impact")
+      .fromTo(
+        "#cup-splash",
+        { opacity: 1, scale: 0.4 },
+        { scale: 1.2, duration: 0.22, immediateRender: false },
+        "impact"
+      )
+      .to("#cup-splash", { opacity: 0, duration: 0.4 }, ">");
+
+    return () => {
+      gsap.set(shakeEls, { clearProps: "transform" });
+      setFraming(ORIGINAL_VB, DESKTOP_PAR);
+      gsap.set("#red-cup, #cup-splash", { clearProps: "x,y,scale,scaleX,rotation,transformOrigin" });
+    };
+  });
+
+  // ---------- reduced motion ----------
+  mm.add("(min-width: 900px) and (prefers-reduced-motion: reduce)", () => {
+    setFraming(ORIGINAL_VB, DESKTOP_PAR);
+    setStatic();
+  });
+  mm.add("(max-width: 899px) and (prefers-reduced-motion: reduce)", () => {
+    setFraming(MOBILE_VB, MOBILE_PAR);
+    setStaticMobile();
+    return () => setFraming(ORIGINAL_VB, DESKTOP_PAR);
+  });
 </script>

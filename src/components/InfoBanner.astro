@@ -35,7 +35,7 @@ const announcements = getAnnouncements(lang);
 <style>
   .info-banner {
     position: fixed;
-    top: 72px; /* below the nav */
+    top: var(--nav-h); /* flush beneath the nav, whatever its height */
     left: 0;
     right: 0;
     z-index: 99;
@@ -155,6 +155,13 @@ const announcements = getAnnouncements(lang);
   /* Pause scrolling on hover for readability */
   .info-banner:hover .info-banner__scroll {
     animation-play-state: paused;
+  }
+
+  /* Phones: slimmer stripes + tighter items so more of the ticker shows */
+  @media (max-width: 560px) {
+    .info-banner__stripe { width: 26px; }
+    .info-banner__item { gap: 0.5rem; padding: 0 1rem; }
+    .info-banner__sep { padding: 0 0.5rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
