@@ -1,0 +1,19 @@
+{
+  "name": "red-cup-league-berlin",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@fontsource/anton": "^5.1.0",
+    "@fontsource/dm-mono": "^5.1.0",
+    "@fontsource/hanken-grotesk": "^5.1.0",
+    "astro": "^4.16.18",
+    "gsap": "^3.15.0"
+  }
+}

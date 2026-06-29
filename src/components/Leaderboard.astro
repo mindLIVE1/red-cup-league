@@ -1,0 +1,126 @@
+---
+import { leaderboard } from "../data/league";
+---
+
+<section class="section hall" id="hall">
+  <div class="wrap">
+    <div class="hall__head">
+      <div>
+        <p class="eyebrow"><span class="idx">05 /</span> Season Ranking</p>
+        <h2 class="section-title">Hall of <span class="warm">Fame</span></h2>
+      </div>
+      <p class="hall__intro reveal">The teams that owned the table. Standings update after every Berlin Cup Night.</p>
+    </div>
+
+    <div class="hall__scroll reveal">
+    <div class="hall__board" role="table" aria-label="Season ranking">
+      <div class="hall__row hall__row--head" role="row">
+        <span role="columnheader" class="c-pos">#</span>
+        <span role="columnheader" class="c-team">Team</span>
+        <span role="columnheader" class="c-num">W</span>
+        <span role="columnheader" class="c-num">L</span>
+        <span role="columnheader" class="c-num">Hits</span>
+        <span role="columnheader" class="c-num">Cups</span>
+        <span role="columnheader" class="c-streak">Streak</span>
+      </div>
+
+      {leaderboard.map((row) => (
+        <div class={`hall__row ${row.pos === 1 ? "is-leader" : ""}`} role="row">
+          <span class="c-pos" role="cell">{String(row.pos).padStart(2, "0")}</span>
+          <span class="c-team" role="cell">
+            <span class="hall__team">{row.team}</span>
+            <span class="hall__district">{row.district}</span>
+          </span>
+          <span class="c-num" role="cell">{row.w}</span>
+          <span class="c-num c-loss" role="cell">{row.l}</span>
+          <span class="c-num" role="cell">{row.hits}</span>
+          <span class="c-num c-cups" role="cell">{row.cups}</span>
+          <span class={`c-streak ${row.streak.startsWith("W") ? "up" : "down"}`} role="cell">{row.streak}</span>
+        </div>
+      ))}
+    </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hall__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+    margin-bottom: 2.6rem;
+  }
+  .section-title .warm { color: var(--warm); }
+  .hall__intro { max-width: 34ch; color: var(--ink-dim); font-size: var(--step-1); }
+
+  .hall__scroll {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    -webkit-overflow-scrolling: touch;
+  }
+  .hall__board {
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--panel);
+    min-width: 540px;
+  }
+  .hall__row {
+    display: grid;
+    grid-template-columns: 3.2rem minmax(0, 1fr) 3rem 3rem 4rem 3.6rem 4.4rem;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.95rem 1.3rem;
+    border-top: 1px solid var(--hairline);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.92rem;
+  }
+  .hall__row:first-child { border-top: 0; }
+  .hall__row--head {
+    color: var(--muted);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background: var(--panel-2);
+  }
+  .c-num, .c-pos { text-align: right; }
+  .hall__row--head .c-num, .hall__row--head .c-pos { text-align: right; }
+  .c-streak { text-align: right; }
+
+  .c-pos { color: var(--muted); }
+  .c-team { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+  .hall__team {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    letter-spacing: 0.01em;
+    color: var(--off-white);
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hall__district {
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .c-loss { color: var(--muted); }
+  .c-cups { color: var(--warm); }
+  .c-streak.up { color: #4ade80; }
+  .c-streak.down { color: var(--cup-red); }
+
+  .hall__row.is-leader {
+    background: linear-gradient(90deg, rgba(250, 204, 21, 0.14), transparent 70%);
+    box-shadow: inset 3px 0 0 var(--warm);
+  }
+  .hall__row.is-leader .c-pos { color: var(--warm); }
+  .hall__row.is-leader .hall__team { color: var(--warm); }
+
+  @media (max-width: 720px) {
+    .hall__intro { font-size: var(--step-0); }
+  }
+</style>

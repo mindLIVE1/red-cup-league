@@ -1,0 +1,116 @@
+---
+import Wordmark from "./Wordmark.astro";
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <div class="footer__brand">
+      <Wordmark class="footer__wordmark" />
+      <p class="footer__tag">Berlin nights. College rules. One champion.</p>
+      <a class="btn footer__cta" href="#signup">Register Team <span class="arrow">→</span></a>
+    </div>
+
+    <nav class="footer__col" aria-label="Pages">
+      <p class="footer__h">League</p>
+      <a href="#events">Events</a>
+      <a href="#how">How it works</a>
+      <a href="#rules">Rules</a>
+      <a href="#hall">Hall of Fame</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <nav class="footer__col" aria-label="Social">
+      <p class="footer__h">Follow</p>
+      <a href="#">Instagram</a>
+      <a href="#">TikTok</a>
+      <a href="#">WhatsApp</a>
+      <a href="mailto:play@redcupleague.berlin">play@redcupleague.berlin</a>
+    </nav>
+  </div>
+
+  <div class="footer__base wrap">
+    <span>© {year} Red Cup League Berlin</span>
+    <span class="footer__fine">Drink responsibly. The cup waits.</span>
+  </div>
+
+  <p class="footer__watermark" aria-hidden="true">RCL</p>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    border-top: 1px solid var(--hairline);
+    padding-top: clamp(3rem, 6vw, 5rem);
+    overflow: hidden;
+    background: var(--berlin-black);
+  }
+  .footer__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 2rem;
+    padding-bottom: 3rem;
+  }
+  .footer__wordmark { font-size: 1.3rem; }
+  .footer__tag {
+    color: var(--ink-dim);
+    margin: 1.2rem 0 1.6rem;
+    max-width: 28ch;
+  }
+  .footer__cta { align-self: start; }
+
+  .footer__col { display: flex; flex-direction: column; gap: 0.7rem; }
+  .footer__h {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+  .footer__col a {
+    color: var(--ink-dim);
+    font-size: 0.95rem;
+    transition: color 0.2s var(--ease);
+    width: fit-content;
+  }
+  .footer__col a:hover { color: var(--off-white); }
+
+  .footer__base {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.5rem;
+    justify-content: space-between;
+    padding-block: 1.6rem;
+    border-top: 1px solid var(--hairline);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  .footer__watermark {
+    position: absolute;
+    bottom: -0.18em;
+    right: var(--gutter);
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 22vw, 18rem);
+    line-height: 0.7;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(248, 247, 242, 0.06);
+    text-stroke: 1px rgba(248, 247, 242, 0.06);
+    pointer-events: none;
+    z-index: 0;
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 720px) {
+    .footer__inner { grid-template-columns: 1fr 1fr; }
+    .footer__brand { grid-column: 1 / -1; }
+  }
+</style>

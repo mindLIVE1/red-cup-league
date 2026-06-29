@@ -1,0 +1,160 @@
+---
+import type { RcEvent } from "../data/league";
+interface Props { event: RcEvent; featured?: boolean }
+const { event, featured = false } = Astro.props;
+
+const badgeClass: Record<RcEvent["status"], string> = {
+  open: "badge--open",
+  soldout: "badge--soldout",
+  final: "badge--final",
+  invite: "badge--invite",
+};
+---
+
+<article class={`ecard reveal ${featured ? "ecard--featured" : ""}`}>
+  <header class="ecard__top">
+    <span class="ecard__night">Night<b>{event.night}</b></span>
+    <span class={`badge ${badgeClass[event.status]}`}>{event.statusLabel}</span>
+  </header>
+
+  <h3 class="ecard__title">{event.title}</h3>
+
+  <dl class="ecard__rows">
+    <div><dt>When</dt><dd>{event.weekday} {event.date} · {event.time}</dd></div>
+    <div><dt>Where</dt><dd>{event.location}, Berlin</dd></div>
+    <div><dt>Format</dt><dd>{event.format}</dd></div>
+    <div>
+      <dt>Teams</dt>
+      <dd class="ecard__teams">
+        <span class="ecard__count">{event.teams}</span>
+        <span class="ecard__meter" style={`--fill:${
+          (parseInt(event.teams) / parseInt(event.teams.split("/")[1])) * 100
+        }%`} aria-hidden="true"></span>
+      </dd>
+    </div>
+  </dl>
+
+  <div class="ecard__perf" aria-hidden="true"></div>
+
+  <a class={`btn ecard__cta ${event.status === "invite" ? "btn--blue" : ""}`} href={event.status === "invite" ? "#hall" : "#signup"}>
+    {event.cta} <span class="arrow">→</span>
+  </a>
+</article>
+
+<style>
+  .ecard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--panel);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.5rem 1.6rem;
+    overflow: hidden;
+    transition: transform 0.25s var(--ease), border-color 0.25s var(--ease),
+      box-shadow 0.25s var(--ease);
+  }
+  .ecard::before {
+    /* top scoreboard stripe */
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cup-red), var(--varsity-blue));
+    opacity: 0.85;
+  }
+  .ecard:hover {
+    transform: translateY(-4px);
+    border-color: var(--hairline-strong);
+    box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.9);
+  }
+  .ecard--featured {
+    border-color: rgba(230, 57, 70, 0.45);
+    box-shadow: 0 0 0 1px rgba(230, 57, 70, 0.2), 0 30px 70px -36px var(--red-glow);
+  }
+
+  .ecard__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.4rem;
+  }
+  .ecard__night {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+  }
+  .ecard__night b {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    color: var(--off-white);
+    letter-spacing: 0;
+  }
+
+  .ecard__title {
+    font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.4rem);
+    margin: 1rem 0 1.2rem;
+    line-height: 0.9;
+  }
+
+  .ecard__rows {
+    display: grid;
+    gap: 0.7rem;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+  }
+  .ecard__rows div {
+    display: grid;
+    grid-template-columns: 5.2rem 1fr;
+    gap: 0.8rem;
+    align-items: baseline;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px dashed var(--hairline);
+  }
+  .ecard__rows dt {
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.7rem;
+  }
+  .ecard__rows dd {
+    margin: 0;
+    color: var(--off-white);
+  }
+  .ecard__teams { display: flex; flex-direction: column; gap: 0.45rem; }
+  .ecard__count { color: var(--off-white); }
+  .ecard__meter {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--panel-2);
+    position: relative;
+    overflow: hidden;
+  }
+  .ecard__meter::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--fill, 0%);
+    background: var(--cup-red);
+  }
+
+  .ecard__perf {
+    height: 1px;
+    margin: 1.3rem -1.5rem 1.4rem;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--hairline) 0 8px,
+      transparent 8px 16px
+    );
+  }
+  .ecard__cta {
+    margin-top: auto;
+    justify-content: center;
+  }
+</style>

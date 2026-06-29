@@ -1,0 +1,49 @@
+---
+import Base from "../layouts/Base.astro";
+import Nav from "../components/Nav.astro";
+import HeroAnimation from "../components/HeroAnimation.astro";
+import UpcomingEvents from "../components/UpcomingEvents.astro";
+import HowItWorks from "../components/HowItWorks.astro";
+import RulesSection from "../components/RulesSection.astro";
+import Leaderboard from "../components/Leaderboard.astro";
+import Gallery from "../components/Gallery.astro";
+import SignupCTA from "../components/SignupCTA.astro";
+import FAQ from "../components/FAQ.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Base>
+  <Nav />
+  <main>
+    <HeroAnimation />
+    <UpcomingEvents />
+    <HowItWorks />
+    <RulesSection />
+    <Leaderboard />
+    <Gallery />
+    <SignupCTA />
+    <FAQ />
+  </main>
+  <Footer />
+</Base>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Scroll-reveal for everything tagged .reveal — skipped under reduced motion.
+  const mm = gsap.matchMedia();
+  mm.add("(prefers-reduced-motion: no-preference)", () => {
+    const items = gsap.utils.toArray<HTMLElement>(".reveal");
+    items.forEach((el) => {
+      gsap.from(el, {
+        opacity: 0,
+        y: 30,
+        duration: 0.7,
+        ease: "power2.out",
+        scrollTrigger: { trigger: el, start: "top 88%" },
+      });
+    });
+  });
+</script>

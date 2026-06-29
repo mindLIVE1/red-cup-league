@@ -1,0 +1,147 @@
+---
+---
+
+<section class="section signup" id="signup">
+  <div class="wrap signup__inner">
+    <div class="signup__glow" aria-hidden="true"></div>
+    <p class="eyebrow"><span class="idx">07 /</span> Enter the Bracket</p>
+    <h2 class="signup__title">
+      Bring your teammate.<br />Take your <span class="red">shot</span>.
+    </h2>
+    <p class="signup__lede reveal">
+      The next Red Cup League Berlin night is coming up. Name your team, lock
+      your spot, and play for the cup.
+    </p>
+
+    <form class="signup__form reveal" id="signup-form" aria-label="Register your team">
+      <label class="signup__field">
+        <span class="signup__label">Team name</span>
+        <input type="text" name="team" placeholder="e.g. Späti Kings" autocomplete="off" required />
+      </label>
+      <button type="submit" class="btn signup__submit">Claim your spot <span class="arrow">→</span></button>
+    </form>
+
+    <p class="signup__status" id="signup-status" role="status" aria-live="polite"></p>
+
+    <div class="signup__alt reveal">
+      <a href="#events" class="signup__link">or view all upcoming events →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .signup {
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    border-top: 1px solid var(--hairline);
+  }
+  .signup__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .signup__glow {
+    position: absolute;
+    width: 120%;
+    height: 360px;
+    top: -90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: radial-gradient(50% 100% at 50% 0, var(--red-glow), transparent 70%);
+    filter: blur(20px);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .signup__title {
+    font-size: var(--step-4);
+    margin: 0.4rem 0 1.2rem;
+    line-height: 0.9;
+  }
+  .signup__lede {
+    max-width: 44ch;
+    color: var(--ink-dim);
+    font-size: var(--step-1);
+    margin-bottom: 2.4rem;
+  }
+
+  .signup__form {
+    display: flex;
+    gap: 0.6rem;
+    width: 100%;
+    max-width: 520px;
+    background: var(--panel);
+    border: 1px solid var(--hairline-strong);
+    border-radius: var(--radius-lg);
+    padding: 0.55rem;
+    align-items: stretch;
+  }
+  .signup__field { flex: 1; display: flex; flex-direction: column; text-align: left; }
+  .signup__label {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0 0 0 0);
+  }
+  .signup__form input {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 0;
+    color: var(--off-white);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    padding: 0.7rem 0.9rem;
+  }
+  .signup__form input::placeholder { color: var(--muted); }
+  .signup__form input:focus { outline: none; }
+  .signup__field:focus-within {
+    box-shadow: inset 0 0 0 1px var(--hairline);
+    border-radius: var(--radius);
+  }
+  .signup__submit { white-space: nowrap; flex-shrink: 0; }
+
+  .signup__status {
+    min-height: 1.3rem;
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+    letter-spacing: 0.04em;
+    color: var(--warm);
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+  }
+  .signup__status.is-shown { opacity: 1; }
+
+  .signup__alt { margin-top: 1.4rem; }
+  .signup__link {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .signup__link:hover { color: var(--off-white); border-color: var(--cup-red); }
+
+  @media (max-width: 540px) {
+    .signup__form { flex-direction: column; }
+    .signup__submit { justify-content: center; }
+  }
+</style>
+
+<script>
+  const form = document.getElementById("signup-form") as HTMLFormElement | null;
+  const status = document.getElementById("signup-status");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const team = (form.elements.namedItem("team") as HTMLInputElement)?.value.trim();
+    if (!status) return;
+    status.textContent = team
+      ? `Spot held for "${team}". We'll confirm the venue by email.`
+      : "Spot held. We'll confirm the venue by email.";
+    status.classList.add("is-shown");
+    form.reset();
+  });
+</script>

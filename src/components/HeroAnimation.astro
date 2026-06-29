@@ -1,0 +1,562 @@
+---
+// The signature: pinned scroll-film.
+// Fernsehturm sphere → beer-pong ball → arcs into the red cup → events reveal.
+// SVG groups use the brief's exact IDs so each layer is animated directly.
+---
+
+<section class="hero" id="top">
+  <div class="hero-stage" data-hero-stage>
+    <div class="hero-shake" data-hero-shake>
+      <!-- atmospheric background (CSS) -->
+      <div class="hero-bg" aria-hidden="true"></div>
+
+      <!-- the layered scene -->
+      <svg
+        class="hero-scene"
+        viewBox="0 0 1280 820"
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label="The Berlin TV Tower sphere transforms into a beer pong ball and lands in a red cup."
+      >
+        <defs>
+          <radialGradient id="metalGrad" cx="0.36" cy="0.30" r="0.85">
+            <stop offset="0" stop-color="#eff3fb" />
+            <stop offset="0.42" stop-color="#aeb9ce" />
+            <stop offset="0.75" stop-color="#586379" />
+            <stop offset="1" stop-color="#262d40" />
+          </radialGradient>
+          <radialGradient id="ghostGrad" cx="0.38" cy="0.32" r="0.85">
+            <stop offset="0" stop-color="#3a4255" />
+            <stop offset="0.5" stop-color="#222a3c" />
+            <stop offset="1" stop-color="#0c0e16" />
+          </radialGradient>
+          <radialGradient id="ballGrad" cx="0.38" cy="0.32" r="0.85">
+            <stop offset="0" stop-color="#ffffff" />
+            <stop offset="0.5" stop-color="#f3f1ea" />
+            <stop offset="0.85" stop-color="#d6d2c7" />
+            <stop offset="1" stop-color="#b9b4a7" />
+          </radialGradient>
+          <linearGradient id="cupGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#ff5a64" />
+            <stop offset="0.45" stop-color="#e63946" />
+            <stop offset="1" stop-color="#a81d29" />
+          </linearGradient>
+          <radialGradient id="cupInner" cx="0.5" cy="0.3" r="0.9">
+            <stop offset="0" stop-color="#7a1019" />
+            <stop offset="1" stop-color="#250508" />
+          </radialGradient>
+          <linearGradient id="sphereGlow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#9fc0ff" stop-opacity="0.5" />
+            <stop offset="1" stop-color="#9fc0ff" stop-opacity="0" />
+          </linearGradient>
+          <pattern id="dimples" width="15" height="15" patternUnits="userSpaceOnUse" patternTransform="rotate(8)">
+            <circle cx="7.5" cy="7.5" r="2.3" fill="#000000" opacity="0.10" />
+            <circle cx="0" cy="0" r="2.3" fill="#ffffff" opacity="0.16" />
+            <circle cx="15" cy="15" r="2.3" fill="#ffffff" opacity="0.16" />
+          </pattern>
+          <clipPath id="sphereClip"><circle cx="905" cy="250" r="58" /></clipPath>
+          <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="7" />
+          </filter>
+        </defs>
+
+        <!-- Berlin skyline silhouette -->
+        <g id="skyline" aria-hidden="true" opacity="0.9">
+          <path
+            fill="#06070c"
+            d="M0 820 V770 H40 V752 H92 V770 H150 V726 H188 V770 H250 V744 H300 V712 H336 V744 H392 V768 H452 V730 H498 V768 H560 V748 H612 V770 H690 V720 H726 V770 H800 V742 H856 V770 H930 V724 H968 V770 H1040 V748 H1096 V770 H1160 V734 H1210 V770 H1280 V820 Z"
+          />
+          <g fill="#1d4ed8" opacity="0.18">
+            <rect x="62" y="758" width="4" height="6" /><rect x="120" y="734" width="4" height="6" />
+            <rect x="312" y="722" width="4" height="6" /><rect x="470" y="742" width="4" height="6" />
+            <rect x="704" y="730" width="4" height="6" /><rect x="946" y="734" width="4" height="6" />
+            <rect x="1180" y="744" width="4" height="6" />
+          </g>
+          <g fill="#facc15" opacity="0.16">
+            <rect x="200" y="754" width="4" height="6" /><rect x="520" y="758" width="4" height="6" />
+            <rect x="820" y="752" width="4" height="6" /><rect x="1108" y="758" width="4" height="6" />
+          </g>
+        </g>
+
+        <!-- TV TOWER (without the detachable orb) -->
+        <g id="tower-wrapper">
+          <ellipse id="sphere-glow" cx="905" cy="250" rx="120" ry="120" fill="url(#sphereGlow)" opacity="0.55" />
+          <!-- base / foot -->
+          <path d="M866 772 L860 800 L950 800 L944 772 Z" fill="#0e1018" />
+          <rect x="845" y="797" width="120" height="6" fill="#0b0c12" />
+          <!-- shaft -->
+          <path d="M893 306 L883 776 L927 776 L917 306 Z" fill="#161a26" />
+          <path d="M903 306 L900 776 L906 776 L907 306 Z" fill="#2b3346" opacity="0.8" />
+          <!-- antenna / spire -->
+          <path d="M902 196 L904 64 L906 64 L908 196 Z" fill="#2b3346" />
+          <circle cx="905" cy="60" r="3.5" fill="#9fc0ff" />
+          <rect x="898" y="120" width="14" height="3" fill="#2b3346" />
+          <rect x="900" y="150" width="10" height="3" fill="#2b3346" />
+          <!-- darker sphere shell that remains after the bright orb lifts off -->
+          <g id="tower-sphere-ghost" opacity="0">
+            <circle cx="905" cy="250" r="58" fill="url(#ghostGrad)" />
+            <g clip-path="url(#sphereClip)">
+              <rect x="847" y="240" width="116" height="22" fill="#070910" opacity="0.6" />
+              <g fill="#2b3650" opacity="0.55">
+                <rect x="858" y="244" width="3" height="14" /><rect x="876" y="244" width="3" height="14" />
+                <rect x="894" y="244" width="3" height="14" /><rect x="912" y="244" width="3" height="14" />
+                <rect x="930" y="244" width="3" height="14" />
+              </g>
+            </g>
+            <circle cx="905" cy="250" r="58" fill="none" stroke="#46527a" stroke-opacity="0.4" stroke-width="1.5" />
+          </g>
+        </g>
+
+        <!-- ORB: sphere + ball + dimples stacked, all centered (905,250) -->
+        <g id="orb">
+          <!-- metallic Fernsehturm sphere -->
+          <g id="tv-tower-sphere-metal">
+            <circle cx="905" cy="250" r="58" fill="url(#metalGrad)" />
+            <g clip-path="url(#sphereClip)">
+              <rect x="847" y="240" width="116" height="22" fill="#10141f" opacity="0.55" />
+              <g fill="#cfe0ff" opacity="0.5">
+                <rect x="858" y="244" width="3" height="14" /><rect x="870" y="244" width="3" height="14" />
+                <rect x="882" y="244" width="3" height="14" /><rect x="894" y="244" width="3" height="14" />
+                <rect x="906" y="244" width="3" height="14" /><rect x="918" y="244" width="3" height="14" />
+                <rect x="930" y="244" width="3" height="14" /><rect x="942" y="244" width="3" height="14" />
+              </g>
+              <ellipse cx="888" cy="228" rx="22" ry="12" fill="#ffffff" opacity="0.45" />
+            </g>
+            <circle cx="905" cy="250" r="58" fill="none" stroke="#cfe0ff" stroke-opacity="0.35" stroke-width="1.5" />
+          </g>
+          <!-- beer pong ball -->
+          <g id="beer-pong-ball" opacity="0">
+            <circle cx="905" cy="250" r="58" fill="url(#ballGrad)" />
+            <ellipse cx="886" cy="230" rx="20" ry="13" fill="#ffffff" opacity="0.7" />
+            <circle cx="905" cy="250" r="58" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1" />
+          </g>
+          <!-- dimple texture (transformation bridge) -->
+          <g id="ball-dimples" opacity="0" clip-path="url(#sphereClip)">
+            <circle cx="905" cy="250" r="58" fill="url(#dimples)" />
+          </g>
+        </g>
+
+        <!-- motion trail (drawn with DrawSVG during flight) -->
+        <path
+          id="motion-trail"
+          d="M905 250 C 820 90, 600 92, 470 540"
+          fill="none"
+          stroke="#f8f7f2"
+          stroke-opacity="0.55"
+          stroke-width="3"
+          stroke-linecap="round"
+        />
+
+        <!-- invisible flight path -->
+        <path id="ball-path" d="M905 250 C 820 90, 600 92, 470 540" fill="none" stroke="none" />
+
+        <!-- RED CUP -->
+        <g id="red-cup" opacity="0">
+          <ellipse cx="470" cy="712" rx="70" ry="11" fill="#000000" opacity="0.5" filter="url(#soft)" />
+          <!-- body -->
+          <path d="M388 548 L416 690 Q470 708 524 690 L552 548 Z" fill="url(#cupGrad)" />
+          <!-- left highlight -->
+          <path d="M398 552 L420 686 Q426 690 432 691 L412 552 Z" fill="#ffffff" opacity="0.14" />
+          <!-- molded rings -->
+          <path d="M395 572 Q470 586 545 572" fill="none" stroke="#000000" stroke-opacity="0.12" stroke-width="3" />
+          <path d="M404 600 Q470 612 536 600" fill="none" stroke="#000000" stroke-opacity="0.10" stroke-width="3" />
+          <path d="M414 660 Q470 672 526 660" fill="none" stroke="#000000" stroke-opacity="0.12" stroke-width="3" />
+          <!-- inner mouth -->
+          <ellipse cx="470" cy="548" rx="73" ry="13" fill="url(#cupInner)" />
+          <ellipse cx="470" cy="546" rx="60" ry="9" fill="#000000" opacity="0.35" />
+          <!-- white rim / lip -->
+          <ellipse cx="470" cy="544" rx="82" ry="15" fill="none" stroke="#f8f7f2" stroke-width="7" />
+          <ellipse cx="470" cy="544" rx="82" ry="15" fill="none" stroke="#cfccc4" stroke-opacity="0.5" stroke-width="2" />
+        </g>
+
+        <!-- SPLASH / impact — centred on the cup mouth (470,544) -->
+        <g id="cup-splash" opacity="0">
+          <ellipse cx="470" cy="544" rx="56" ry="10" fill="none" stroke="#f8f7f2" stroke-width="3" stroke-opacity="0.85" />
+          <g fill="#f8f7f2">
+            <circle cx="426" cy="514" r="4" /><circle cx="514" cy="512" r="5" />
+            <circle cx="450" cy="498" r="3" /><circle cx="492" cy="500" r="3.5" />
+            <circle cx="470" cy="490" r="3.4" />
+          </g>
+          <g stroke="#f8f7f2" stroke-width="3" stroke-linecap="round" opacity="0.85">
+            <line x1="432" y1="526" x2="422" y2="506" /><line x1="508" y1="526" x2="518" y2="506" />
+            <line x1="470" y1="522" x2="470" y2="500" />
+          </g>
+        </g>
+      </svg>
+
+      <!-- keyword pops around the arc (decorative) -->
+      <div class="kw-layer" aria-hidden="true">
+        <span class="kw kw--1">Rack&nbsp;’em</span>
+        <span class="kw kw--2">Bounce&nbsp;<i>×2</i></span>
+        <span class="kw kw--3">Swish</span>
+        <span class="kw kw--4">No&nbsp;mercy</span>
+        <span class="kw kw--5">Game&nbsp;on</span>
+      </div>
+
+      <!-- HERO COPY -->
+      <div class="hero-copy wrap">
+        <p class="eyebrow">Season 02 · 24 Teams · One Cup</p>
+        <h1 class="hero-title">
+          <span class="l1">Red Cup</span>
+          <span class="l2">League</span>
+          <span class="l3">Berlin</span>
+        </h1>
+        <p class="hero-sub">
+          College cup energy meets dark Berlin nightlife. Register your team,
+          enter the bracket, and play for glory.
+        </p>
+        <div class="hero-actions">
+          <a class="btn" href="#events">View Events <span class="arrow">→</span></a>
+          <a class="btn btn--ghost" href="#signup">Register Team</a>
+        </div>
+      </div>
+
+      <!-- tower annotation + scroll cue -->
+      <p class="tower-tag" aria-hidden="true">Fernsehturm · 368&thinsp;m</p>
+      <div class="scroll-cue" aria-hidden="true">
+        <span>Scroll to take the shot</span>
+        <span class="scroll-cue__bar"><span class="scroll-cue__dot"></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+  }
+  .hero-stage {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+    width: 100%;
+    overflow: hidden;
+  }
+  .hero-shake {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(120% 80% at 72% 18%, rgba(29, 78, 216, 0.22), transparent 55%),
+      radial-gradient(90% 70% at 38% 88%, rgba(230, 57, 70, 0.18), transparent 60%),
+      radial-gradient(140% 120% at 50% 0%, #11141f 0%, #090a0f 60%);
+  }
+  .hero-bg::after {
+    /* vignette */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 100% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.55));
+  }
+  .hero-scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-copy {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    pointer-events: none;
+  }
+  .hero-copy > * { pointer-events: auto; }
+  /* entrance fades the container only — GSAP owns the children's opacity,
+     so the two never fight (this kept the copy from sticking hidden on resize). */
+  .hero-copy { animation: heroFade 0.85s var(--ease) 0.1s both; }
+  @keyframes heroFade { from { opacity: 0; } to { opacity: 1; } }
+
+  .hero-title {
+    font-size: var(--step-5);
+    line-height: 0.82;
+    margin: 0 0 1.4rem;
+    text-shadow: 0 14px 50px rgba(0, 0, 0, 0.5);
+  }
+  .hero-title span { display: block; }
+  .hero-title .l3 {
+    color: var(--cup-red);
+    -webkit-text-stroke: 0;
+  }
+  .hero-sub {
+    max-width: 34ch;
+    color: var(--ink-dim);
+    font-size: var(--step-1);
+    line-height: 1.45;
+    margin-bottom: 2rem;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+
+  /* keyword pops — varsity stamps scattered around the ball's arc */
+  .kw-layer { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+  .kw {
+    position: absolute;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: clamp(1.1rem, 0.7rem + 1.1vw, 1.9rem);
+    line-height: 0.9;
+    letter-spacing: 0.01em;
+    color: var(--off-white);
+    opacity: 0;
+    white-space: nowrap;
+    text-shadow: 0 6px 22px rgba(0, 0, 0, 0.55);
+  }
+  .kw i { font-style: normal; color: var(--warm); }
+  .kw--1 { left: 69%; top: 41%; color: var(--off-white); transform: rotate(-7deg); }
+  .kw--2 { left: 61%; top: 25%; color: var(--cup-red); transform: rotate(5deg); }
+  .kw--3 { left: 52%; top: 14%; color: var(--warm); transform: rotate(-4deg); }
+  .kw--4 { left: 75%; top: 22%; color: var(--varsity-blue); transform: rotate(8deg); }
+  .kw--5 { left: 66%; top: 53%; color: var(--off-white); transform: rotate(-5deg); }
+  @media (max-width: 899px) { .kw-layer { display: none; } }
+
+  .tower-tag {
+    position: absolute;
+    z-index: 3;
+    right: max(var(--gutter), 8%);
+    top: 16%;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-left: 1.6rem;
+  }
+  .tower-tag::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 1.1rem;
+    height: 1px;
+    background: var(--muted);
+  }
+
+  .scroll-cue {
+    position: absolute;
+    left: 50%;
+    bottom: 2.2rem;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .scroll-cue__bar {
+    width: 2px;
+    height: 34px;
+    background: var(--hairline-strong);
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .scroll-cue__dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    background: var(--cup-red);
+    animation: cueRun 1.8s var(--ease) infinite;
+  }
+  @keyframes cueRun {
+    0% { transform: translateY(-100%); }
+    60%, 100% { transform: translateY(340%); }
+  }
+
+  /* the headline sits on the left on wide screens, tower on the right */
+  @media (min-width: 900px) {
+    .hero-copy {
+      left: var(--gutter);
+      top: 50%;
+      transform: translateY(-50%);
+      max-width: 620px;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  @media (max-width: 899px) {
+    .hero-title { font-size: clamp(3.4rem, 17vw, 6rem); }
+    .hero-sub { font-size: var(--step-0); }
+    .tower-tag { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-cue__dot { animation: none; top: 30%; }
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+  import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+
+  gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, DrawSVGPlugin);
+
+  // --- nav scrolled state ---
+  const nav = document.getElementById("nav");
+  if (nav) {
+    const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 48);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  const stage = document.querySelector<HTMLElement>("[data-hero-stage]");
+  const shakeEls = ["[data-hero-shake]", "#nav"];
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // Calm tableau for reduced motion: the tower sphere already IS the ball,
+  // the cup waits below, everything legible and still.
+  function setStatic() {
+    gsap.set("#tv-tower-sphere-metal", { opacity: 0 });
+    gsap.set("#tower-sphere-ghost", { opacity: 0 });
+    gsap.set("#beer-pong-ball", { opacity: 1 });
+    gsap.set("#ball-dimples", { opacity: 0.4 });
+    gsap.set("#red-cup", { opacity: 1, y: 0 });
+    gsap.set("#motion-trail", { opacity: 0.25, drawSVG: "100%" });
+  }
+
+  // Real-time screen shake (not scrubbed) — fired once when the ball lands.
+  let lastShake = 0;
+  function screenShake() {
+    const now = performance.now();
+    if (now - lastShake < 500) return;
+    lastShake = now;
+    gsap.to(shakeEls, {
+      keyframes: [
+        { x: -13, y: 8, duration: 0.05 },
+        { x: 11, y: -9, duration: 0.05 },
+        { x: -8, y: 6, duration: 0.05 },
+        { x: 6, y: -4, duration: 0.05 },
+        { x: -3, y: 2, duration: 0.05 },
+        { x: 0, y: 0, duration: 0.07 },
+      ],
+      ease: "power2.out",
+    });
+  }
+
+  const mm = gsap.matchMedia();
+
+  // ---------- full scroll-film (desktop + tablet) ----------
+  mm.add(
+    {
+      desktop: "(min-width: 900px) and (prefers-reduced-motion: no-preference)",
+      handheld: "(max-width: 899px) and (prefers-reduced-motion: no-preference)",
+    },
+    (ctx) => {
+      const { desktop } = ctx.conditions as { desktop: boolean };
+      const ORIGIN = { svgOrigin: "905 250" } as const;
+
+      // baseline scene state for the film
+      gsap.set("#red-cup", { opacity: 0, y: 26 });
+      gsap.set("#motion-trail", { drawSVG: "0%", opacity: 0 });
+      gsap.set("#beer-pong-ball, #ball-dimples, #cup-splash, #tower-sphere-ghost", { opacity: 0 });
+      if (desktop) gsap.set(".kw", { opacity: 0, scale: 0.5, transformOrigin: "center" });
+
+      const tl = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: stage,
+          start: "top top",
+          end: desktop ? "+=3600" : "+=2200",
+          scrub: desktop ? 1 : 0.6,
+          pin: true,
+          anticipatePin: 1,
+        },
+      });
+
+      // Phase 1→2 — camera pushes toward the sphere (copy stays put & legible).
+      // Only the scroll hint fades; all headline copy remains fully visible.
+      tl.to(".scroll-cue", { opacity: 0, duration: 0.4 }, 0)
+        .to("#tower-wrapper", { scale: 1.16, ...ORIGIN }, 0)
+        .to("#orb", { scale: 1.16, ...ORIGIN }, 0);
+
+      // Phase 3 — wind-up / detach; the darker sphere shell starts to show
+      tl.to("#sphere-glow", { opacity: 1, scale: 1.25, ...ORIGIN }, ">-0.2")
+        .to("#orb", { rotation: 18, scale: 1.0, ...ORIGIN }, "<")
+        .to("#tower-sphere-ghost", { opacity: 0.45 }, "<")
+        .to(".tower-tag", { opacity: 0 }, "<");
+
+      // Phase 4 — metal sphere crossfades into the beer-pong ball
+      tl.addLabel("morph")
+        .to("#tv-tower-sphere-metal", { opacity: 0 }, "morph")
+        .to("#beer-pong-ball", { opacity: 1, rotation: 40, ...ORIGIN }, "morph")
+        .to("#ball-dimples", { opacity: 1 }, "morph")
+        .to("#tower-sphere-ghost", { opacity: 0.85 }, "morph");
+
+      // Phase 5 — ball flies the arc, trail draws behind it, cup rises to meet it
+      tl.to("#tower-wrapper", { scale: 1.0, ...ORIGIN }, ">")
+        .to("#sphere-glow", { opacity: 0.18, duration: 0.7 }, "<")
+        .to("#red-cup", { opacity: 1, y: 0, duration: 0.6 }, "<")
+        .fromTo("#motion-trail", { drawSVG: "0%", opacity: 0.55 }, { drawSVG: "100%", duration: 2.2 }, "<")
+        .to(
+          "#orb",
+          {
+            duration: 2.2,
+            scale: 0.46,
+            rotation: "+=420",
+            motionPath: {
+              path: "#ball-path",
+              align: "#ball-path",
+              alignOrigin: [0.5, 0.5],
+              autoRotate: false,
+            },
+          },
+          "<"
+        );
+
+      // keywords pop in around the arc as the ball travels (desktop only)
+      if (desktop) {
+        tl.to(
+          ".kw",
+          { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)", stagger: 0.32 },
+          "<+0.15"
+        );
+      }
+
+      // Phase 6 — impact: cup shake, splash bursts from the rim, whole scene jolts
+      tl.addLabel("impact")
+        .call(screenShake, undefined, "impact")
+        .to("#red-cup", { y: 7, scaleX: 1.06, duration: 0.1, transformOrigin: "470px 700px" }, "impact")
+        .to("#red-cup", { y: 0, scaleX: 1, rotation: -2.5, duration: 0.16 }, ">")
+        .to("#red-cup", { rotation: 0, duration: 0.2 }, ">")
+        .to("#motion-trail", { opacity: 0, duration: 0.4 }, "impact")
+        .fromTo(
+          "#cup-splash",
+          { opacity: 1, scale: 0.4, svgOrigin: "470 544" },
+          { scale: 1.2, duration: 0.22, svgOrigin: "470 544" },
+          "impact"
+        )
+        .to("#cup-splash", { opacity: 0, duration: 0.4 }, ">");
+
+      return () => {
+        gsap.set(shakeEls, { clearProps: "transform" });
+      };
+    }
+  );
+
+  // ---------- reduced motion ----------
+  mm.add("(prefers-reduced-motion: reduce)", () => {
+    setStatic();
+  });
+
+  // safety: if reduced preference is on
+  if (reduce.matches) setStatic();
+</script>
