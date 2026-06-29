@@ -1,0 +1,165 @@
+---
+// Sports-ticker info banner — sits directly below the nav bar.
+// Frat house / varsity pennant aesthetic: diagonal stripes, bold type, scrolling ticker.
+
+import { getAnnouncements } from "../data/announcements";
+import type { Lang } from "../i18n/ui";
+
+interface Props { lang?: Lang }
+const lang = Astro.props.lang ?? "de";
+const announcements = getAnnouncements(lang);
+---
+
+<div class="info-banner" id="info-banner" role="marquee" aria-label="Announcements">
+  <div class="info-banner__stripe info-banner__stripe--l" aria-hidden="true"></div>
+
+  <div class="info-banner__track">
+    <div class="info-banner__scroll" data-banner-scroll>
+      {/* Duplicate announcements for seamless infinite scroll */}
+      {[...announcements, ...announcements].map((a) => (
+        <span class="info-banner__item">
+          <span class="info-banner__text">{a.text}</span>
+          <a class="info-banner__link" href={a.linkUrl}>
+            {a.linkLabel}
+            <span class="info-banner__arrow">→</span>
+          </a>
+          <span class="info-banner__sep" aria-hidden="true">★</span>
+        </span>
+      ))}
+    </div>
+  </div>
+
+  <div class="info-banner__stripe info-banner__stripe--r" aria-hidden="true"></div>
+</div>
+
+<style>
+  .info-banner {
+    position: fixed;
+    top: 72px; /* below the nav */
+    left: 0;
+    right: 0;
+    z-index: 99;
+    height: 38px;
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+    background: var(--college-navy);
+    border-bottom: 2px solid var(--muted-brick);
+    box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Diagonal stripe accents on each end — pennant / frat banner feel */
+  .info-banner__stripe {
+    width: 42px;
+    flex-shrink: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--muted-brick),
+      var(--muted-brick) 4px,
+      var(--college-navy) 4px,
+      var(--college-navy) 8px
+    );
+    border-right: 2px solid rgba(248, 247, 242, 0.12);
+  }
+  .info-banner__stripe--r {
+    border-right: none;
+    border-left: 2px solid rgba(248, 247, 242, 0.12);
+  }
+
+  .info-banner__track {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      black 5%,
+      black 95%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      black 5%,
+      black 95%,
+      transparent 100%
+    );
+  }
+
+  .info-banner__scroll {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    white-space: nowrap;
+    animation: bannerScroll 28s linear infinite;
+    will-change: transform;
+  }
+
+  @keyframes bannerScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .info-banner__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0 1.6rem;
+  }
+
+  .info-banner__text {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--off-white);
+    line-height: 1;
+  }
+
+  .info-banner__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--warm);
+    background: rgba(250, 204, 21, 0.1);
+    border: 1px solid rgba(250, 204, 21, 0.3);
+    border-radius: 2px;
+    padding: 0.2em 0.55em;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+    white-space: nowrap;
+  }
+  .info-banner__link:hover {
+    background: rgba(250, 204, 21, 0.22);
+    color: #fff;
+  }
+
+  .info-banner__arrow {
+    transition: transform 0.15s var(--ease);
+  }
+  .info-banner__link:hover .info-banner__arrow {
+    transform: translateX(2px);
+  }
+
+  .info-banner__sep {
+    color: var(--muted-brick);
+    font-size: 0.7rem;
+    opacity: 0.6;
+    padding: 0 0.8rem;
+  }
+
+  /* Pause scrolling on hover for readability */
+  .info-banner:hover .info-banner__scroll {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .info-banner__scroll {
+      animation: none;
+    }
+  }
+</style>

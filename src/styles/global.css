@@ -22,8 +22,12 @@
   --blue-glow: rgba(29, 78, 216, 0.4);
   --ink-dim: rgba(248, 247, 242, 0.66);
 
+  /* --- Collegiate color accents (typography treatment) --- */
+  --college-navy: #10194a;
+  --muted-brick: #a33a28;
+
   /* --- Type --- */
-  --font-display: "Anton", "Arial Narrow", sans-serif;
+  --font-display: "Alfa Slab One", "Rockwell", "Courier New", serif;
   --font-body: "Hanken Grotesk", system-ui, sans-serif;
   --font-mono: "DM Mono", ui-monospace, "SF Mono", monospace;
 
@@ -79,9 +83,9 @@ body::after {
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 400; /* Anton is single-weight; weight is in the glyph */
-  line-height: 0.92;
-  letter-spacing: 0.01em;
+  font-weight: 400; /* Alfa Slab One is single-weight */
+  line-height: 0.95;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   margin: 0;
 }
@@ -140,6 +144,12 @@ img, svg { display: block; max-width: 100%; }
 .section-title {
   font-size: var(--step-4);
   max-width: 16ch;
+  /* Collegiate layered text-shadow: white inline glow + brick-red depth */
+  text-shadow:
+    0 0 0 var(--off-white),
+    2px 2px 0 var(--muted-brick),
+    3px 3px 0 rgba(16, 25, 74, 0.55);
+  -webkit-text-stroke: 0.5px rgba(248, 247, 242, 0.15);
 }
 .section-title .blue { color: var(--varsity-blue); }
 .section-title .red { color: var(--cup-red); }

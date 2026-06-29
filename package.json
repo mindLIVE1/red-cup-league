@@ -10,6 +10,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@fontsource/alfa-slab-one": "^5.2.8",
     "@fontsource/anton": "^5.1.0",
     "@fontsource/dm-mono": "^5.1.0",
     "@fontsource/hanken-grotesk": "^5.1.0",

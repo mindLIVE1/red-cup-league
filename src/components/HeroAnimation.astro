@@ -281,14 +281,25 @@ const t = useTranslations(lang);
 
   .hero-title {
     font-size: var(--step-5);
-    line-height: 0.82;
+    line-height: 0.88;
     margin: 0 0 1.4rem;
-    text-shadow: 0 14px 50px rgba(0, 0, 0, 0.5);
+    /* Collegiate layered text-shadow: white inline glow + brick-red depth + dark shadow */
+    text-shadow:
+      0 0 2px rgba(248, 247, 242, 0.3),
+      2px 2px 0 var(--muted-brick),
+      4px 4px 0 rgba(16, 25, 74, 0.6),
+      0 14px 50px rgba(0, 0, 0, 0.5);
+    -webkit-text-stroke: 0.8px rgba(248, 247, 242, 0.12);
   }
   .hero-title span { display: block; }
   .hero-title .l3 {
     color: var(--cup-red);
     -webkit-text-stroke: 0;
+    text-shadow:
+      0 0 2px rgba(230, 57, 70, 0.4),
+      2px 2px 0 var(--college-navy),
+      4px 4px 0 rgba(0, 0, 0, 0.5),
+      0 14px 50px rgba(0, 0, 0, 0.5);
   }
   .hero-sub {
     max-width: 34ch;
