@@ -7,19 +7,30 @@ import "@fontsource/dm-mono/400.css";
 import "@fontsource/dm-mono/500.css";
 import "../styles/global.css";
 
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
 interface Props {
   title?: string;
   description?: string;
+  lang?: Lang;
 }
 
+const lang = Astro.props.lang ?? "de";
+const t = useTranslations(lang);
+
 const {
-  title = "Red Cup League Berlin — Competitive Beer Pong Nights",
-  description = "Berlin's competitive beer pong league. College cup energy meets dark Berlin nightlife. Register your team, enter the bracket, play for glory.",
+  title = lang === "de"
+    ? "Red Cup League Berlin — Competitive Beer Pong Nächte"
+    : "Red Cup League Berlin — Competitive Beer Pong Nights",
+  description = lang === "de"
+    ? "Berlins kompetitive Beer-Pong-Liga. College-Cup-Energie trifft auf dunkles Berliner Nachtleben. Melde dein Team an, tritt in die Bracket ein, spiel um den Ruhm."
+    : "Berlin's competitive beer pong league. College cup energy meets dark Berlin nightlife. Register your team, enter the bracket, play for glory.",
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,7 +43,7 @@ const {
     <title>{title}</title>
   </head>
   <body>
-    <a class="skip-link" href="#events">Skip to events</a>
+    <a class="skip-link" href="#events">{t("skip")}</a>
     <slot />
     <style>
       .skip-link {

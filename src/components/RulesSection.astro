@@ -1,17 +1,23 @@
 ---
-import { rules } from "../data/league";
+import { getRules } from "../data/league";
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props { lang?: Lang }
+const lang = Astro.props.lang ?? "de";
+const t = useTranslations(lang);
+const rules = getRules(lang);
 ---
 
 <section class="section rules" id="rules">
   <div class="wrap rules__grid">
     <aside class="rules__intro">
-      <p class="eyebrow"><span class="idx">04 /</span> House Rules</p>
-      <h2 class="section-title">No excuses.<br /><span class="red">No mercy.</span><br />Just cups.</h2>
+      <p class="eyebrow"><span class="idx">04 /</span> {t("rules.eyebrow")}</p>
+      <h2 class="section-title">{t("rules.title.line1")}<br /><span class="red">{t("rules.title.line2")}</span><br />{t("rules.title.line3")}</h2>
       <p class="rules__lede reveal">
-        Simple enough to play after midnight. Strict enough to settle every
-        argument at the table.
+        {t("rules.lede")}
       </p>
-      <p class="rules__stamp" aria-hidden="true">Official · RCL Berlin</p>
+      <p class="rules__stamp" aria-hidden="true">{t("rules.stamp")}</p>
     </aside>
 
     <ol class="rules__list">

@@ -1,7 +1,11 @@
 ---
 import type { RcEvent } from "../data/league";
-interface Props { event: RcEvent; featured?: boolean }
-const { event, featured = false } = Astro.props;
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props { event: RcEvent; featured?: boolean; lang?: Lang }
+const { event, featured = false, lang = "de" } = Astro.props;
+const t = useTranslations(lang);
 
 const badgeClass: Record<RcEvent["status"], string> = {
   open: "badge--open",
@@ -13,18 +17,18 @@ const badgeClass: Record<RcEvent["status"], string> = {
 
 <article class={`ecard reveal ${featured ? "ecard--featured" : ""}`}>
   <header class="ecard__top">
-    <span class="ecard__night">Night<b>{event.night}</b></span>
+    <span class="ecard__night">{t("event.night")}<b>{event.night}</b></span>
     <span class={`badge ${badgeClass[event.status]}`}>{event.statusLabel}</span>
   </header>
 
   <h3 class="ecard__title">{event.title}</h3>
 
   <dl class="ecard__rows">
-    <div><dt>When</dt><dd>{event.weekday} {event.date} · {event.time}</dd></div>
-    <div><dt>Where</dt><dd>{event.location}, Berlin</dd></div>
-    <div><dt>Format</dt><dd>{event.format}</dd></div>
+    <div><dt>{t("event.when")}</dt><dd>{event.weekday} {event.date} · {event.time}</dd></div>
+    <div><dt>{t("event.where")}</dt><dd>{event.location}, Berlin</dd></div>
+    <div><dt>{t("event.format")}</dt><dd>{event.format}</dd></div>
     <div>
-      <dt>Teams</dt>
+      <dt>{t("event.teams")}</dt>
       <dd class="ecard__teams">
         <span class="ecard__count">{event.teams}</span>
         <span class="ecard__meter" style={`--fill:${

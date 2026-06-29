@@ -1,22 +1,45 @@
 ---
 import Wordmark from "./Wordmark.astro";
+import type { Lang } from "../i18n/ui";
+import { useTranslations, getLocalizedPath } from "../i18n/utils";
+
+interface Props { lang?: Lang }
+const lang = Astro.props.lang ?? "de";
+const t = useTranslations(lang);
+
+const otherLang: Lang = lang === "de" ? "en" : "de";
+const switchPath = getLocalizedPath(otherLang, Astro.url.pathname);
 ---
 
 <header class="nav" id="nav">
   <div class="nav__inner wrap">
-    <a class="nav__brand" href="#top" aria-label="Red Cup League Berlin — home">
+    <a class="nav__brand" href="#top" aria-label={t("nav.home.aria")}>
       <Wordmark />
     </a>
 
     <nav class="nav__links" aria-label="Primary">
-      <a href="#events">Events</a>
-      <a href="#how">How it works</a>
-      <a href="#rules">Rules</a>
-      <a href="#hall">Hall of Fame</a>
-      <a href="#faq">FAQ</a>
+      <a href="#events">{t("nav.events")}</a>
+      <a href="#how">{t("nav.how")}</a>
+      <a href="#rules">{t("nav.rules")}</a>
+      <a href="#hall">{t("nav.hall")}</a>
+      <a href="#faq">{t("nav.faq")}</a>
     </nav>
 
-    <a class="btn nav__cta" href="#signup">Register Team</a>
+    <div class="nav__lang" aria-label="Language">
+      <a
+        href={lang === "de" ? "#" : switchPath}
+        class:list={["nav__lang-opt", { "is-active": lang === "de" }]}
+        aria-current={lang === "de" ? "true" : undefined}
+      >DE</a>
+      <span class="nav__lang-sep" aria-hidden="true">|</span>
+      <a
+        href={lang === "en" ? "#" : switchPath}
+        class:list={["nav__lang-opt", { "is-active": lang === "en" }]}
+        aria-current={lang === "en" ? "true" : undefined}
+      >EN</a>
+    </div>
+
+    <a class="btn nav__cta" href="#signup">{t("nav.cta")}</a>
   </div>
 </header>
 
@@ -78,6 +101,39 @@ import Wordmark from "./Wordmark.astro";
   .nav__links a:hover::after {
     transform: scaleX(1);
   }
+
+  /* ---- Language picker ---- */
+  .nav__lang {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .nav__lang-opt {
+    color: var(--muted);
+    padding: 0.25em 0.4em;
+    border-radius: 2px;
+    transition: color 0.2s var(--ease), background 0.2s var(--ease);
+    text-decoration: none;
+  }
+  .nav__lang-opt:hover {
+    color: var(--off-white);
+  }
+  .nav__lang-opt.is-active {
+    color: var(--cup-red);
+    background: rgba(230, 57, 70, 0.12);
+    pointer-events: none;
+  }
+  .nav__lang-sep {
+    color: var(--hairline-strong);
+    font-weight: 300;
+    user-select: none;
+  }
+
   .nav__cta {
     padding: 0.6em 1.1em;
     flex-shrink: 0;
@@ -87,8 +143,11 @@ import Wordmark from "./Wordmark.astro";
     .nav__links {
       display: none;
     }
-    .nav__cta {
+    .nav__lang {
       margin-left: auto;
+    }
+    .nav__cta {
+      margin-left: 0;
     }
   }
 </style>

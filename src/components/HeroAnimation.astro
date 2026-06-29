@@ -2,6 +2,13 @@
 // The signature: pinned scroll-film.
 // Fernsehturm sphere → beer-pong ball → arcs into the red cup → events reveal.
 // SVG groups use the brief's exact IDs so each layer is animated directly.
+
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props { lang?: Lang }
+const lang = Astro.props.lang ?? "de";
+const t = useTranslations(lang);
 ---
 
 <section class="hero" id="top">
@@ -16,7 +23,7 @@
         viewBox="0 0 1280 820"
         preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-label="The Berlin TV Tower sphere transforms into a beer pong ball and lands in a red cup."
+        aria-label={t("hero.svg.aria")}
       >
         <defs>
           <radialGradient id="metalGrad" cx="0.36" cy="0.30" r="0.85">
@@ -186,35 +193,34 @@
 
       <!-- keyword pops around the arc (decorative) -->
       <div class="kw-layer" aria-hidden="true">
-        <span class="kw kw--1">Rack&nbsp;’em</span>
-        <span class="kw kw--2">Bounce&nbsp;<i>×2</i></span>
-        <span class="kw kw--3">Swish</span>
-        <span class="kw kw--4">No&nbsp;mercy</span>
-        <span class="kw kw--5">Game&nbsp;on</span>
+        <span class="kw kw--1">{t("hero.kw.1")}</span>
+        <span class="kw kw--2">{t("hero.kw.2")}</span>
+        <span class="kw kw--3">{t("hero.kw.3")}</span>
+        <span class="kw kw--4">{t("hero.kw.4")}</span>
+        <span class="kw kw--5">{t("hero.kw.5")}</span>
       </div>
 
       <!-- HERO COPY -->
       <div class="hero-copy wrap">
-        <p class="eyebrow">Season 02 · 24 Teams · One Cup</p>
+        <p class="eyebrow">{t("hero.eyebrow")}</p>
         <h1 class="hero-title">
           <span class="l1">Red Cup</span>
           <span class="l2">League</span>
           <span class="l3">Berlin</span>
         </h1>
         <p class="hero-sub">
-          College cup energy meets dark Berlin nightlife. Register your team,
-          enter the bracket, and play for glory.
+          {t("hero.subtitle")}
         </p>
         <div class="hero-actions">
-          <a class="btn" href="#events">View Events <span class="arrow">→</span></a>
-          <a class="btn btn--ghost" href="#signup">Register Team</a>
+          <a class="btn" href="#events">{t("hero.cta.events")} <span class="arrow">→</span></a>
+          <a class="btn btn--ghost" href="#signup">{t("hero.cta.signup")}</a>
         </div>
       </div>
 
       <!-- tower annotation + scroll cue -->
       <p class="tower-tag" aria-hidden="true">Fernsehturm · 368&thinsp;m</p>
       <div class="scroll-cue" aria-hidden="true">
-        <span>Scroll to take the shot</span>
+        <span>{t("hero.scroll")}</span>
         <span class="scroll-cue__bar"><span class="scroll-cue__dot"></span></span>
       </div>
     </div>

@@ -1,18 +1,19 @@
 ---
-const recaps = [
-  { tag: "Night 01 · Kreuzberg", score: "21–18", winner: "Späti Kings", tone: "red", span: "tall" },
-  { tag: "Night 02 · Neukölln", score: "Final", winner: "Sudden death", tone: "blue", span: "" },
-  { tag: "Bounce of the night", score: "x2", winner: "Mitte Snipers", tone: "warm", span: "" },
-  { tag: "Night 03 · F'hain", score: "24 Teams", winner: "Sold out", tone: "dark", span: "wide" },
-  { tag: "Crowd shot", score: "01:14", winner: "After the final", tone: "blue", span: "" },
-];
+import { getGalleryRecaps } from "../data/league";
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props { lang?: Lang }
+const lang = Astro.props.lang ?? "de";
+const t = useTranslations(lang);
+const recaps = getGalleryRecaps(lang);
 ---
 
 <section class="section gallery" id="gallery">
   <div class="wrap">
     <div class="gallery__head">
-      <p class="eyebrow"><span class="idx">06 /</span> Recap</p>
-      <h2 class="section-title">Nights that<br />earned a <span class="red">photo</span></h2>
+      <p class="eyebrow"><span class="idx">06 /</span> {t("gallery.eyebrow")}</p>
+      <h2 class="section-title">{t("gallery.title.line1")}<br />{t("gallery.title.line2")} <span class="red">{t("gallery.title.line3")}</span></h2>
     </div>
 
     <div class="gallery__grid">

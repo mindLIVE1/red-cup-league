@@ -1,27 +1,33 @@
 ---
 import { leaderboard } from "../data/league";
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props { lang?: Lang }
+const lang = Astro.props.lang ?? "de";
+const t = useTranslations(lang);
 ---
 
 <section class="section hall" id="hall">
   <div class="wrap">
     <div class="hall__head">
       <div>
-        <p class="eyebrow"><span class="idx">05 /</span> Season Ranking</p>
-        <h2 class="section-title">Hall of <span class="warm">Fame</span></h2>
+        <p class="eyebrow"><span class="idx">05 /</span> {t("leaderboard.eyebrow")}</p>
+        <h2 class="section-title">{t("leaderboard.title.line1")} <span class="warm">{t("leaderboard.title.line2")}</span></h2>
       </div>
-      <p class="hall__intro reveal">The teams that owned the table. Standings update after every Berlin Cup Night.</p>
+      <p class="hall__intro reveal">{t("leaderboard.intro")}</p>
     </div>
 
     <div class="hall__scroll reveal">
-    <div class="hall__board" role="table" aria-label="Season ranking">
+    <div class="hall__board" role="table" aria-label={t("leaderboard.aria")}>
       <div class="hall__row hall__row--head" role="row">
         <span role="columnheader" class="c-pos">#</span>
-        <span role="columnheader" class="c-team">Team</span>
+        <span role="columnheader" class="c-team">{t("leaderboard.col.team")}</span>
         <span role="columnheader" class="c-num">W</span>
         <span role="columnheader" class="c-num">L</span>
-        <span role="columnheader" class="c-num">Hits</span>
-        <span role="columnheader" class="c-num">Cups</span>
-        <span role="columnheader" class="c-streak">Streak</span>
+        <span role="columnheader" class="c-num">{t("leaderboard.col.hits")}</span>
+        <span role="columnheader" class="c-num">{t("leaderboard.col.cups")}</span>
+        <span role="columnheader" class="c-streak">{t("leaderboard.col.streak")}</span>
       </div>
 
       {leaderboard.map((row) => (

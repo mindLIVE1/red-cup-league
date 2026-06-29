@@ -1,5 +1,11 @@
 ---
 import Wordmark from "./Wordmark.astro";
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props { lang?: Lang }
+const lang = Astro.props.lang ?? "de";
+const t = useTranslations(lang);
 const year = new Date().getFullYear();
 ---
 
@@ -7,21 +13,21 @@ const year = new Date().getFullYear();
   <div class="wrap footer__inner">
     <div class="footer__brand">
       <Wordmark class="footer__wordmark" />
-      <p class="footer__tag">Berlin nights. College rules. One champion.</p>
-      <a class="btn footer__cta" href="#signup">Register Team <span class="arrow">→</span></a>
+      <p class="footer__tag">{t("footer.tag")}</p>
+      <a class="btn footer__cta" href="#signup">{t("footer.cta")} <span class="arrow">→</span></a>
     </div>
 
     <nav class="footer__col" aria-label="Pages">
-      <p class="footer__h">League</p>
-      <a href="#events">Events</a>
-      <a href="#how">How it works</a>
-      <a href="#rules">Rules</a>
-      <a href="#hall">Hall of Fame</a>
-      <a href="#faq">FAQ</a>
+      <p class="footer__h">{t("footer.col.league")}</p>
+      <a href="#events">{t("footer.events")}</a>
+      <a href="#how">{t("footer.how")}</a>
+      <a href="#rules">{t("footer.rules")}</a>
+      <a href="#hall">{t("footer.hall")}</a>
+      <a href="#faq">{t("footer.faq")}</a>
     </nav>
 
     <nav class="footer__col" aria-label="Social">
-      <p class="footer__h">Follow</p>
+      <p class="footer__h">{t("footer.col.follow")}</p>
       <a href="#">Instagram</a>
       <a href="#">TikTok</a>
       <a href="#">WhatsApp</a>
@@ -31,7 +37,7 @@ const year = new Date().getFullYear();
 
   <div class="footer__base wrap">
     <span>© {year} Red Cup League Berlin</span>
-    <span class="footer__fine">Drink responsibly. The cup waits.</span>
+    <span class="footer__fine">{t("footer.fine")}</span>
   </div>
 
   <p class="footer__watermark" aria-hidden="true">RCL</p>

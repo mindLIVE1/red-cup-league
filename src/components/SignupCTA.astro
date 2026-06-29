@@ -1,30 +1,39 @@
 ---
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props { lang?: Lang }
+const lang = Astro.props.lang ?? "de";
+const t = useTranslations(lang);
 ---
 
 <section class="section signup" id="signup">
   <div class="wrap signup__inner">
     <div class="signup__glow" aria-hidden="true"></div>
-    <p class="eyebrow"><span class="idx">07 /</span> Enter the Bracket</p>
+    <p class="eyebrow"><span class="idx">07 /</span> {t("signup.eyebrow")}</p>
     <h2 class="signup__title">
-      Bring your teammate.<br />Take your <span class="red">shot</span>.
+      {t("signup.title.line1")}<br />
+      {t("signup.title.line2")} <span class="red">{t("signup.title.line3")}</span>.
     </h2>
     <p class="signup__lede reveal">
-      The next Red Cup League Berlin night is coming up. Name your team, lock
-      your spot, and play for the cup.
+      {t("signup.lede")}
     </p>
 
-    <form class="signup__form reveal" id="signup-form" aria-label="Register your team">
+    <form class="signup__form reveal" id="signup-form" aria-label={t("signup.label")}>
       <label class="signup__field">
-        <span class="signup__label">Team name</span>
-        <input type="text" name="team" placeholder="e.g. Späti Kings" autocomplete="off" required />
+        <span class="signup__label">{t("signup.label")}</span>
+        <input type="text" name="team" placeholder={t("signup.placeholder")} autocomplete="off" required />
       </label>
-      <button type="submit" class="btn signup__submit">Claim your spot <span class="arrow">→</span></button>
+      <button type="submit" class="btn signup__submit">{t("signup.submit")} <span class="arrow">→</span></button>
     </form>
 
-    <p class="signup__status" id="signup-status" role="status" aria-live="polite"></p>
+    <p class="signup__status" id="signup-status" role="status" aria-live="polite"
+      data-msg-with={t("signup.status.with_team")}
+      data-msg-without={t("signup.status.without_team")}
+    ></p>
 
     <div class="signup__alt reveal">
-      <a href="#events" class="signup__link">or view all upcoming events →</a>
+      <a href="#events" class="signup__link">{t("signup.alt")}</a>
     </div>
   </div>
 </section>
@@ -138,9 +147,14 @@
     e.preventDefault();
     const team = (form.elements.namedItem("team") as HTMLInputElement)?.value.trim();
     if (!status) return;
+
+    // Read translated status messages from data attributes
+    const msgWith = status.dataset.msgWith ?? 'Spot held for "{team}".';
+    const msgWithout = status.dataset.msgWithout ?? "Spot held.";
+
     status.textContent = team
-      ? `Spot held for "${team}". We'll confirm the venue by email.`
-      : "Spot held. We'll confirm the venue by email.";
+      ? msgWith.replace("{team}", team)
+      : msgWithout;
     status.classList.add("is-shown");
     form.reset();
   });

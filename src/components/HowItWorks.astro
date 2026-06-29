@@ -1,12 +1,19 @@
 ---
-import { howItWorks } from "../data/league";
+import { getHowItWorks } from "../data/league";
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props { lang?: Lang }
+const lang = Astro.props.lang ?? "de";
+const t = useTranslations(lang);
+const howItWorks = getHowItWorks(lang);
 ---
 
 <section class="section how" id="how">
   <div class="wrap">
     <div class="how__head">
-      <p class="eyebrow"><span class="idx">03 /</span> The Format</p>
-      <h2 class="section-title">From the<br /><span class="blue">tower</span> to the cup</h2>
+      <p class="eyebrow"><span class="idx">03 /</span> {t("how.eyebrow")}</p>
+      <h2 class="section-title">{t("how.title.line1")}<br /><span class="blue">{t("how.title.line2")}</span> {t("how.title.line3")}</h2>
     </div>
 
     <ol class="how__bracket">

@@ -1,13 +1,20 @@
 ---
-import { faqs } from "../data/league";
+import { getFaqs } from "../data/league";
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props { lang?: Lang }
+const lang = Astro.props.lang ?? "de";
+const t = useTranslations(lang);
+const faqs = getFaqs(lang);
 ---
 
 <section class="section faq" id="faq">
   <div class="wrap faq__grid">
     <div class="faq__head">
-      <p class="eyebrow"><span class="idx">08 /</span> Before you play</p>
-      <h2 class="section-title">Questions<br />from the line</h2>
-      <p class="faq__note reveal">Still unsure? Catch us on the night — the table answers everything.</p>
+      <p class="eyebrow"><span class="idx">08 /</span> {t("faq.eyebrow")}</p>
+      <h2 class="section-title">{t("faq.title.line1")}<br />{t("faq.title.line2")}</h2>
+      <p class="faq__note reveal">{t("faq.note")}</p>
     </div>
 
     <div class="faq__list">

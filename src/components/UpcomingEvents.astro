@@ -1,23 +1,29 @@
 ---
 import EventCard from "./EventCard.astro";
-import { events } from "../data/league";
+import { getEvents } from "../data/league";
+import type { Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props { lang?: Lang }
+const lang = Astro.props.lang ?? "de";
+const t = useTranslations(lang);
+const events = getEvents(lang);
 ---
 
 <section class="section events" id="events">
   <div class="wrap">
     <div class="events__head">
       <div>
-        <p class="eyebrow"><span class="idx">02 /</span> Fixtures</p>
-        <h2 class="section-title">Upcoming<br /><span class="red">Events</span></h2>
+        <p class="eyebrow"><span class="idx">02 /</span> {t("events.eyebrow")}</p>
+        <h2 class="section-title">{t("events.title.line1")}<br /><span class="red">{t("events.title.line2")}</span></h2>
       </div>
       <p class="events__intro reveal">
-        The next shots are already lined up. Grab your teammate and secure your
-        spot before the bracket fills.
+        {t("events.intro")}
       </p>
     </div>
 
     <div class="events__grid">
-      {events.map((event, i) => <EventCard event={event} featured={i === 0} />)}
+      {events.map((event, i) => <EventCard event={event} featured={i === 0} lang={lang} />)}
     </div>
   </div>
 </section>
